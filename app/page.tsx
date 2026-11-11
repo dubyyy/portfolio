@@ -1,69 +1,73 @@
-import Image from "next/image";
+
+import { Suspense } from "react";
+import { BioText } from "@/components/BioText";
+import { SocialLinks } from "@/components/SocialLinks";
+import { Experience } from "@/components/Experience";
+import { BlogSection } from "@/components/BlogSection";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
+    <main className="min-h-screen flex justify-center px-6">
+      <section className="w-full max-w-3xl py-16 md:py-24">
+        <div className="space-y-12">
+          {/* Aesthetic top bar with obvious link to blogs section */}
+          <div className="flex items-center justify-between pb-2">
+            <span className="font-mono text-xs uppercase tracking-widest text-neutral-500">
+              Michael Dubem Chukwuafu
+            </span>
+
             <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              href="#blogs"
+              className="group inline-flex items-center gap-2 rounded-full border border-neutral-800 bg-neutral-950/80 px-3.5 py-1.5 font-mono text-xs text-neutral-300 backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-neutral-600 hover:bg-neutral-900 hover:text-white hover:shadow-lg hover:shadow-black/50"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+              </span>
+              <span>Blog & Articles</span>
+              <span className="text-neutral-500 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-white">
+                →
+              </span>
+            </a>
+          </div>
+
+          <div className="space-y-6">
+            <p className="text-xs md:text-sm font-mono uppercase tracking-widest text-neutral-500">
+              Software Engineer · Solutions Architect · Engineer & Cloud Specialist
+            </p>
+
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-semibold tracking-[-0.03em] leading-[1.15] text-neutral-300">
+              Building Complicated Systems{" "}
+
+            </h1>
+
+            <div className="text-base md:text-lg leading-8 text-neutral-600 dark:text-neutral-400">
+              <BioText>
+                I'm Michael Dubem Chukwuafu, a software engineer and Computer
+                Engineering student passionate about building useful
+                products and solving real-world problems through
+                technology.
+
+              </BioText>
+            </div>
+          </div>
+
+          <SocialLinks />
+
+          <Experience />
+
+          <Suspense
+            fallback={
+              <div className="space-y-4 pt-2">
+                <div className="h-6 w-32 bg-neutral-900 rounded" />
+                <div className="h-28 rounded-2xl border border-neutral-900 bg-neutral-950/40 animate-pulse" />
+              </div>
+            }
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <BlogSection />
+          </Suspense>
         </div>
-      </main>
-    </div>
+      </section>
+    </main>
   );
 }
