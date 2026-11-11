@@ -1,7 +1,5 @@
 import { getAllPosts } from "@/lib/sanity/queries";
 
-export const dynamic = "force-dynamic";
-
 export async function GET() {
   const posts = await getAllPosts();
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://chukwuafumichael.dev";
