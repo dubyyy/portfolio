@@ -28,7 +28,7 @@ export function PortableText({ content }: PortableTextProps) {
                 return (
                   <h1
                     key={idx}
-                    className="text-2xl sm:text-3xl font-bold tracking-tight text-white mt-10 mb-4"
+                    className="text-3xl sm:text-4xl font-bold tracking-tight text-white mt-10 mb-4"
                   >
                     {text}
                   </h1>
@@ -37,7 +37,7 @@ export function PortableText({ content }: PortableTextProps) {
                 return (
                   <h2
                     key={idx}
-                    className="text-xl sm:text-2xl font-semibold tracking-tight text-white mt-8 mb-3"
+                    className="text-2xl sm:text-3xl font-semibold tracking-tight text-white mt-8 mb-3"
                   >
                     {text}
                   </h2>
@@ -46,10 +46,37 @@ export function PortableText({ content }: PortableTextProps) {
                 return (
                   <h3
                     key={idx}
-                    className="text-lg sm:text-xl font-medium tracking-tight text-neutral-100 mt-6 mb-2"
+                    className="text-xl sm:text-2xl font-semibold tracking-tight text-neutral-100 mt-6 mb-2"
                   >
                     {text}
                   </h3>
+                );
+              case "h4":
+                return (
+                  <h4
+                    key={idx}
+                    className="text-lg sm:text-xl font-semibold tracking-tight text-white mt-5 mb-2"
+                  >
+                    {text}
+                  </h4>
+                );
+              case "h5":
+                return (
+                  <h5
+                    key={idx}
+                    className="text-sm sm:text-base font-semibold tracking-tight text-neutral-200 mt-4 mb-2"
+                  >
+                    {text}
+                  </h5>
+                );
+              case "h6":
+                return (
+                  <h6
+                    key={idx}
+                    className="text-xs sm:text-sm font-semibold tracking-wide uppercase text-neutral-300 mt-4 mb-1"
+                  >
+                    {text}
+                  </h6>
                 );
               case "blockquote":
                 return (
