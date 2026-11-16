@@ -102,9 +102,9 @@ export function AsciiGlitchRipple({
     // Initialize content
     el.textContent = children;
 
-    const updateCursorPos = (e: MouseEvent) => {
+    const updateCursorPos = (clientX: number) => {
       const rect = el.getBoundingClientRect();
-      const x = e.clientX - rect.left;
+      const x = clientX - rect.left;
       const len = stateRef.current.origTxt.length;
       const pos = Math.round((x / rect.width) * len);
       stateRef.current.cursorPos = Math.max(0, Math.min(pos, len - 1));
@@ -207,14 +207,14 @@ export function AsciiGlitchRipple({
 
     const handleEnter = (e: MouseEvent) => {
       stateRef.current.isHover = true;
-      updateCursorPos(e);
+      updateCursorPos(e.clientX);
       startWave();
     };
 
     const handleMove = (e: MouseEvent) => {
       if (!stateRef.current.isHover) return;
       const old = stateRef.current.cursorPos;
-      updateCursorPos(e);
+      updateCursorPos(e.clientX);
       if (stateRef.current.cursorPos !== old) startWave();
     };
 
@@ -222,14 +222,33 @@ export function AsciiGlitchRipple({
       stateRef.current.isHover = false;
     };
 
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        updateCursorPos(e.touches[0].clientX);
+        startWave();
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        const old = stateRef.current.cursorPos;
+        updateCursorPos(e.touches[0].clientX);
+        if (stateRef.current.cursorPos !== old) startWave();
+      }
+    };
+
     el.addEventListener("mouseenter", handleEnter);
     el.addEventListener("mousemove", handleMove);
     el.addEventListener("mouseleave", handleLeave);
+    el.addEventListener("touchstart", handleTouchStart, { passive: true });
+    el.addEventListener("touchmove", handleTouchMove, { passive: true });
 
     return () => {
       el.removeEventListener("mouseenter", handleEnter);
       el.removeEventListener("mousemove", handleMove);
       el.removeEventListener("mouseleave", handleLeave);
+      el.removeEventListener("touchstart", handleTouchStart);
+      el.removeEventListener("touchmove", handleTouchMove);
       if (stateRef.current.animId) {
         cancelAnimationFrame(stateRef.current.animId);
       }
