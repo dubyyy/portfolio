@@ -7,7 +7,7 @@ import { CategoryFilter } from "@/components/blog/CategoryFilter";
 
 export const metadata = {
   title: "Blog & Writing | Michael Dubem Chukwuafu",
-  description: "Articles and insights on software engineering, InfoSec, AI, and blockchain.",
+  description: "Blogs and Writing By Michael Dubem Chukwuafu",
 };
 
 export default async function BlogPage() {
