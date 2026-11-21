@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { SpotlightNavbar } from "@/components/ui/spotlight-navbar";
 import { cn } from "@/lib/utils";
 
@@ -18,6 +21,22 @@ export default function SiteHeader({
     className,
     items = DEFAULT_ITEMS,
 }: SiteHeaderProps) {
+    const [scrollProgress, setScrollProgress] = useState(0);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentScroll = window.scrollY;
+            // Smoothly progress from 0 to 1 over first 150px of scroll
+            const progress = Math.min(Math.max(currentScroll / 150, 0), 1);
+            setScrollProgress(progress);
+        };
+
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        handleScroll();
+
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
     return (
         <header
             className={cn(
@@ -26,15 +45,21 @@ export default function SiteHeader({
             )}
         >
             <div
+                style={{
+                    // Smoothly expand width from compact default up to an expanded pill width
+                    width: `calc(230px + ${scrollProgress * 250}px)`,
+                    maxWidth: "100%",
+                    transition: "width 0.3s cubic-bezier(0.25, 1, 0.5, 1)",
+                }}
                 className={cn(
-                    "pointer-events-auto max-w-full overflow-hidden",
+                    "pointer-events-auto overflow-hidden",
                     // round border
                     "rounded-full border border-white/10 dark:border-white/15",
                     // subtle glass effect so the border reads over any content
                     "bg-background/60 backdrop-blur-md shadow-lg"
                 )}
             >
-                <SpotlightNavbar className={className} items={[...items]} />
+                <SpotlightNavbar className={cn("w-full", className)} items={[...items]} />
             </div>
         </header>
     );

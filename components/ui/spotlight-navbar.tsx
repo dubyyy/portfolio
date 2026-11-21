@@ -16,6 +16,10 @@ export interface SpotlightNavbarProps {
     className?: string;
     onItemClick?: (item: NavItem, index: number) => void;
     defaultActiveIndex?: number;
+    /** Max width (px) of the pill at the top of the page */
+    initialWidth?: number;
+    /** Max width (px) of the pill after scrolling */
+    scrolledWidth?: number;
 }
 
 export function SpotlightNavbar({
@@ -27,12 +31,23 @@ export function SpotlightNavbar({
     className,
     onItemClick,
     defaultActiveIndex = 0,
+    initialWidth = 360,
+    scrolledWidth = 560,
 }: SpotlightNavbarProps) {
     const pathname = usePathname();
     const navRef = useRef<HTMLDivElement>(null);
     const [activeIndex, setActiveIndex] = useState(defaultActiveIndex);
     const [hoverX, setHoverX] = useState<number | null>(null);
     const [isDark, setIsDark] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
+
+    // Grow only the pill when the page is scrolled
+    useEffect(() => {
+        const onScroll = () => setScrolled(window.scrollY > 20);
+        onScroll();
+        window.addEventListener("scroll", onScroll, { passive: true });
+        return () => window.removeEventListener("scroll", onScroll);
+    }, []);
 
     // Sync active index with current pathname
     useEffect(() => {
@@ -53,11 +68,14 @@ export function SpotlightNavbar({
 
     useEffect(() => {
         const checkTheme = () => {
-            setIsDark(document.documentElement.classList.contains('dark'));
+            setIsDark(document.documentElement.classList.contains("dark"));
         };
         checkTheme();
         const observer = new MutationObserver(checkTheme);
-        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ["class"],
+        });
         return () => observer.disconnect();
     }, []);
 
@@ -69,14 +87,12 @@ export function SpotlightNavbar({
             const rect = nav.getBoundingClientRect();
             const x = e.clientX - rect.left;
             setHoverX(x);
-            // Direct update for immediate feedback (no spring for the mouse itself, feels snappier)
             spotlightX.current = x;
             nav.style.setProperty("--spotlight-x", `${x}px`);
         };
 
         const handleMouseLeave = () => {
             setHoverX(null);
-            // When mouse leaves, spring the spotlight back to the active item
             const activeItem = nav.querySelector(`[data-index="${activeIndex}"]`);
             if (activeItem) {
                 const navRect = nav.getBoundingClientRect();
@@ -90,7 +106,7 @@ export function SpotlightNavbar({
                     onUpdate: (v) => {
                         spotlightX.current = v;
                         nav.style.setProperty("--spotlight-x", `${v}px`);
-                    }
+                    },
                 });
             }
         };
@@ -127,22 +143,43 @@ export function SpotlightNavbar({
         }
     }, [activeIndex]);
 
+    // Keep the active glow aligned with the active item while the pill resizes
+    useEffect(() => {
+        const nav = navRef.current;
+        if (!nav) return;
+
+        const sync = () => {
+            const item = nav.querySelector(`[data-index="${activeIndex}"]`);
+            if (!item) return;
+            const navRect = nav.getBoundingClientRect();
+            const itemRect = item.getBoundingClientRect();
+            const x = itemRect.left - navRect.left + itemRect.width / 2;
+            ambienceX.current = x;
+            nav.style.setProperty("--ambience-x", `${x}px`);
+        };
+
+        const ro = new ResizeObserver(sync);
+        ro.observe(nav);
+        return () => ro.disconnect();
+    }, [activeIndex]);
+
     const handleItemClick = (item: NavItem, index: number) => {
         setActiveIndex(index);
         onItemClick?.(item, index);
     };
 
     return (
-        <div className={cn("relative flex justify-center", className)}>
+        <div className={cn("relative flex justify-center w-full", className)}>
             <nav
                 ref={navRef}
+                style={{ maxWidth: scrolled ? scrolledWidth : initialWidth }}
                 className={cn(
                     "spotlight-nav spotlight-nav-bg glass-border spotlight-nav-shadow",
-                    "relative h-11 rounded-full transition-all duration-300 overflow-hidden"
+                    "relative h-11 w-full rounded-full transition-[max-width] duration-300 ease-out overflow-hidden flex items-center justify-center"
                 )}
             >
-                {/* Content */}
-                <ul className="relative flex items-center h-full px-2 gap-0 z-[10]">
+                {/* Content: fixed gap, centered, so spacing never changes */}
+                <ul className="relative flex items-center justify-center gap-2 w-full h-full px-2 z-[10]">
                     {items.map((item, idx) => (
                         <li key={idx} className="relative h-full flex items-center justify-center">
                             <Link
@@ -154,7 +191,6 @@ export function SpotlightNavbar({
                                 className={cn(
                                     "px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium transition-colors duration-200 rounded-full",
                                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 dark:focus-visible:ring-white/30",
-                                    // Active vs Inactive Text
                                     activeIndex === idx
                                         ? "text-black dark:text-white"
                                         : "text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white"
@@ -165,10 +201,6 @@ export function SpotlightNavbar({
                         </li>
                     ))}
                 </ul>
-
-                {/* LIGHTING LAYERS 
-           We use CSS variables --spotlight-x and --ambience-x updated by JS
-        */}
 
                 {/* 1. The Moving Spotlight (Follows Mouse) */}
                 <div
@@ -181,7 +213,7 @@ export function SpotlightNavbar({
                 var(--spotlight-color, rgba(0,0,0,0.1)) 0%, 
                 transparent 50%
               )
-            `
+            `,
                     }}
                 />
 
@@ -195,16 +227,11 @@ export function SpotlightNavbar({
                     var(--ambience-color, rgba(0,0,0,1)) 0%, 
                     transparent 100%
                   )
-                `
+                `,
                     }}
                 />
-
             </nav>
 
-            {/* STYLE BLOCK for Dynamic Colors 
-        This allows us to switch the gradient colors cleanly using Tailwind classes 
-        without messy inline conditionals.
-      */}
             <style jsx>{`
         nav {
           /* Light Mode Colors: Dark Gray/Black lights */
