@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getAllPosts, getAllCategories } from "@/lib/sanity/queries";
 import { PostCard } from "@/components/blog/PostCard";
 import { CategoryFilter } from "@/components/blog/CategoryFilter";
+import Navbar from "@/components/Navbar";
 
 
 export const metadata = {
@@ -17,8 +18,9 @@ export default async function BlogPage() {
   ]);
 
   return (
-    <main className="min-h-screen flex justify-center px-6">
-      <section className="w-full max-w-3xl py-16 md:py-24">
+    <main className="min-h-screen flex justify-center px-4 sm:px-6">
+      <Navbar />
+      <section className="w-full max-w-3xl pt-24 pb-16 sm:py-20 md:py-24">
         <div className="space-y-10">
           {/* Top navigation */}
           <div className="flex items-center justify-between pb-2">

@@ -4,11 +4,13 @@ import { BioText } from "@/components/BioText";
 import { SocialLinks } from "@/components/SocialLinks";
 import { Experience } from "@/components/Experience";
 import { BlogSection } from "@/components/BlogSection";
+import SpotlightNavbarDemo from "@/components/Navbar";
 
 export default function Home() {
   return (
-    <main className="min-h-screen flex justify-center px-6">
-      <section className="w-full max-w-3xl py-16 md:py-24">
+    <main className="min-h-screen flex justify-center px-4 sm:px-6">
+      <SpotlightNavbarDemo />
+      <section className="w-full max-w-3xl pt-24 pb-16 sm:py-20 md:py-24">
         <div className="space-y-12">
           {/* Aesthetic top bar with obvious link to blogs section */}
           <div className="flex items-center justify-between pb-2">
