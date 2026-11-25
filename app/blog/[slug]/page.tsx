@@ -7,6 +7,8 @@ import { PortableText } from "@/components/blog/PortableText";
 import { AuthorBox } from "@/components/blog/AuthorBox";
 import { RelatedPosts } from "@/components/blog/RelatedPosts";
 import { JsonLd } from "@/components/blog/JsonLd";
+import { sanityOgImage } from "@/lib/sanity/image";
+import { defaultAuthor, siteName } from "@/lib/site";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
@@ -25,14 +27,34 @@ export async function generateMetadata({
     };
   }
 
+  const path = `/blog/${post.slug.current}`;
+  const ogImage = sanityOgImage(post.mainImage);
+  const images = ogImage
+    ? [{ ...ogImage, alt: ogImage.alt || post.title }]
+    : undefined;
+
   return {
-    title: `${post.title} | Michael Dubem Chukwuafu`,
+    title: `${post.title} | ${siteName}`,
     description: post.excerpt,
+    alternates: { canonical: path },
     openGraph: {
       title: post.title,
       description: post.excerpt,
       type: "article",
+      url: path,
+      siteName,
+      locale: "en_US",
       publishedTime: post.publishedAt,
+      modifiedTime: post._updatedAt,
+      authors: [post.author?.name || defaultAuthor],
+      tags: post.categories?.map((c) => c.title),
+      images,
+    },
+    twitter: {
+      card: images ? "summary_large_image" : "summary",
+      title: post.title,
+      description: post.excerpt,
+      images: images?.map((i) => i.url),
     },
   };
 }

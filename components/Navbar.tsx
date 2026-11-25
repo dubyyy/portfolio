@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import { SpotlightNavbar } from "@/components/ui/spotlight-navbar";
 import { cn } from "@/lib/utils";
 
@@ -12,6 +12,9 @@ const DEFAULT_ITEMS: readonly NavItem[] = [
     { label: "Projects", href: "/projects" },
 ];
 
+/** Scroll distance (px) over which the navbar grows from compact to full width */
+const GROW_DISTANCE = 200;
+
 interface SiteHeaderProps {
     className?: string;
     items?: readonly NavItem[];
@@ -21,21 +24,18 @@ export default function SiteHeader({
     className,
     items = DEFAULT_ITEMS,
 }: SiteHeaderProps) {
-    const [scrollProgress, setScrollProgress] = useState(0);
+    const { scrollY } = useScroll();
 
-    useEffect(() => {
-        const handleScroll = () => {
-            const currentScroll = window.scrollY;
-            // Smoothly progress from 0 to 1 over first 150px of scroll
-            const progress = Math.min(Math.max(currentScroll / 150, 0), 1);
-            setScrollProgress(progress);
-        };
-
-        window.addEventListener("scroll", handleScroll, { passive: true });
-        handleScroll();
-
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
+    // Map scroll position to a 0 → 1 progress value, then smooth it with a spring
+    // so the width eases into place instead of tracking the scrollbar rigidly.
+    const rawProgress = useTransform(scrollY, [0, GROW_DISTANCE], [0, 1], {
+        clamp: true,
+    });
+    const progress = useSpring(rawProgress, {
+        stiffness: 180,
+        damping: 28,
+        mass: 0.6,
+    });
 
     return (
         <header
@@ -44,17 +44,18 @@ export default function SiteHeader({
                 "top-[max(1rem,env(safe-area-inset-top))] sm:top-[max(1.5rem,env(safe-area-inset-top))] md:top-[max(2rem,env(safe-area-inset-top))]"
             )}
         >
-            <div
+            <motion.div
                 style={{
-                    // Smoothly expand width from compact default up to an expanded pill width
-                    width: `calc(var(--nav-base) + ${scrollProgress} * var(--nav-grow))`,
+                    // --nav-progress is driven by the spring (no React re-renders on scroll)
+                    ["--nav-progress" as string]: progress,
+                    // Grow by at most 20% of the base width
+                    width: "calc(var(--nav-base) * (1 + 0.2 * var(--nav-progress)))",
                     maxWidth: "100%",
-                    transition: "width 0.3s cubic-bezier(0.25, 1, 0.5, 1)",
                 }}
                 className={cn(
-                    "pointer-events-auto overflow-hidden",
-                    // responsive base/expanded widths (more breathing room on larger screens)
-                    "[--nav-base:230px] [--nav-grow:250px] md:[--nav-base:300px] md:[--nav-grow:240px] lg:[--nav-base:340px] lg:[--nav-grow:260px]",
+                    "pointer-events-auto overflow-hidden will-change-[width]",
+                    // responsive base widths (more breathing room on larger screens)
+                    "[--nav-base:230px] md:[--nav-base:300px] lg:[--nav-base:340px]",
                     // round border
                     "rounded-full border border-white/10 dark:border-white/15",
                     // subtle glass effect so the border reads over any content
@@ -62,7 +63,7 @@ export default function SiteHeader({
                 )}
             >
                 <SpotlightNavbar className={cn("w-full", className)} items={[...items]} />
-            </div>
+            </motion.div>
         </header>
     );
 }

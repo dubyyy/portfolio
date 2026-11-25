@@ -16,10 +16,6 @@ export interface SpotlightNavbarProps {
     className?: string;
     onItemClick?: (item: NavItem, index: number) => void;
     defaultActiveIndex?: number;
-    /** Max width (px) of the pill at the top of the page */
-    initialWidth?: number;
-    /** Max width (px) of the pill after scrolling */
-    scrolledWidth?: number;
 }
 
 export function SpotlightNavbar({
@@ -31,23 +27,12 @@ export function SpotlightNavbar({
     className,
     onItemClick,
     defaultActiveIndex = 0,
-    initialWidth = 400,
-    scrolledWidth = 640,
 }: SpotlightNavbarProps) {
     const pathname = usePathname();
     const navRef = useRef<HTMLDivElement>(null);
     const [activeIndex, setActiveIndex] = useState(defaultActiveIndex);
     const [hoverX, setHoverX] = useState<number | null>(null);
     const [isDark, setIsDark] = useState(false);
-    const [scrolled, setScrolled] = useState(false);
-
-    // Grow only the pill when the page is scrolled
-    useEffect(() => {
-        const onScroll = () => setScrolled(window.scrollY > 20);
-        onScroll();
-        window.addEventListener("scroll", onScroll, { passive: true });
-        return () => window.removeEventListener("scroll", onScroll);
-    }, []);
 
     // Sync active index with current pathname
     useEffect(() => {
@@ -172,10 +157,9 @@ export function SpotlightNavbar({
         <div className={cn("relative flex justify-center w-full", className)}>
             <nav
                 ref={navRef}
-                style={{ maxWidth: scrolled ? scrolledWidth : initialWidth }}
                 className={cn(
                     "spotlight-nav spotlight-nav-bg glass-border spotlight-nav-shadow",
-                    "relative h-11 md:h-12 w-full rounded-full transition-[max-width] duration-300 ease-out overflow-hidden flex items-center justify-center"
+                    "relative h-11 md:h-12 w-full rounded-full overflow-hidden flex items-center justify-center"
                 )}
             >
                 {/* Content: fixed gap, centered, so spacing never changes */}

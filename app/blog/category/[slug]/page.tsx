@@ -28,6 +28,7 @@ export async function generateMetadata({
   return {
     title: `${category.title} Articles | Michael Dubem Chukwuafu`,
     description: `Articles categorized under ${category.title}.`,
+    alternates: { canonical: `/blog/category/${category.slug.current}` },
   };
 }
 

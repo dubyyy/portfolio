@@ -6,6 +6,10 @@ import { Experience } from "@/components/Experience";
 import { BlogSection } from "@/components/BlogSection";
 import SpotlightNavbarDemo from "@/components/Navbar";
 
+export const metadata = {
+  alternates: { canonical: "/" },
+};
+
 export default function Home() {
   return (
     <main className="min-h-screen flex justify-center px-4 sm:px-6">

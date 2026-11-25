@@ -9,6 +9,14 @@ import Navbar from "@/components/Navbar";
 export const metadata = {
   title: "Blog & Writing | Michael Dubem Chukwuafu",
   description: "Blogs and Writing By Michael Dubem Chukwuafu",
+  alternates: { canonical: "/blog" },
+  openGraph: {
+    title: "Blog & Writing | Michael Dubem Chukwuafu",
+    description: "Blogs and Writing By Michael Dubem Chukwuafu",
+    url: "/blog",
+    type: "website",
+    siteName: "Michael Dubem Chukwuafu",
+  },
 };
 
 export default async function BlogPage() {

@@ -30,7 +30,17 @@ export const post = {
       name: "mainImage",
       title: "Main image",
       type: "image",
+      description: "Also used as the social share image (cropped to 1200×630).",
       options: { hotspot: true },
+      fields: [
+        {
+          name: "alt",
+          title: "Alt text",
+          type: "string",
+          description: "Describe the image for screen readers and search engines.",
+          validation: (Rule: any) => Rule.required().warning("Add alt text for accessibility and SEO"),
+        },
+      ],
     },
     {
       name: "body",
@@ -47,8 +57,46 @@ export const post = {
             { title: "H4", value: "h4" },
             { title: "Quote", value: "blockquote" },
           ],
+          marks: {
+            annotations: [
+              {
+                name: "link",
+                title: "Link",
+                type: "object",
+                fields: [
+                  {
+                    name: "href",
+                    title: "URL",
+                    type: "url",
+                    description: "Full URL, or a path on this site such as /blog/my-post",
+                    validation: (Rule: any) =>
+                      Rule.uri({ allowRelative: true, scheme: ["http", "https", "mailto"] }),
+                  },
+                  {
+                    name: "blank",
+                    title: "Open in new tab",
+                    type: "boolean",
+                    initialValue: true,
+                  },
+                ],
+              },
+            ],
+          },
         },
-        { type: "image", options: { hotspot: true } },
+        {
+          type: "image",
+          options: { hotspot: true },
+          fields: [
+            {
+              name: "alt",
+              title: "Alt text",
+              type: "string",
+              description: "Describe the image for screen readers and search engines.",
+              validation: (Rule: any) => Rule.required().warning("Add alt text for accessibility and SEO"),
+            },
+            { name: "caption", title: "Caption", type: "string" },
+          ],
+        },
       ],
     },
   ],
