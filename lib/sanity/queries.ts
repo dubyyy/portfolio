@@ -33,6 +33,7 @@ export async function getAllPosts(): Promise<SanityPost[]> {
 }
 
 export async function getPostBySlug(slug: string): Promise<SanityPost | null> {
+  "use cache";
   if (!isSanityConfigured || !client) {
     return fallbackPosts.find((p) => p.slug.current === slug) || null;
   }
@@ -67,6 +68,7 @@ export async function getPostsByCategory(categorySlug: string): Promise<SanityPo
 }
 
 export async function getAllCategories(): Promise<SanityCategory[]> {
+  "use cache";
   if (!isSanityConfigured || !client) {
     const map = new Map<string, SanityCategory>();
     fallbackPosts.forEach((p) => {

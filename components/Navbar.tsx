@@ -41,18 +41,20 @@ export default function SiteHeader({
         <header
             className={cn(
                 "pointer-events-none fixed inset-x-0 z-50 flex justify-center px-4 sm:px-6",
-                "top-[max(1rem,env(safe-area-inset-top))] sm:top-[max(1.5rem,env(safe-area-inset-top))]"
+                "top-[max(1rem,env(safe-area-inset-top))] sm:top-[max(1.5rem,env(safe-area-inset-top))] md:top-[max(2rem,env(safe-area-inset-top))]"
             )}
         >
             <div
                 style={{
                     // Smoothly expand width from compact default up to an expanded pill width
-                    width: `calc(230px + ${scrollProgress * 250}px)`,
+                    width: `calc(var(--nav-base) + ${scrollProgress} * var(--nav-grow))`,
                     maxWidth: "100%",
                     transition: "width 0.3s cubic-bezier(0.25, 1, 0.5, 1)",
                 }}
                 className={cn(
                     "pointer-events-auto overflow-hidden",
+                    // responsive base/expanded widths (more breathing room on larger screens)
+                    "[--nav-base:230px] [--nav-grow:250px] md:[--nav-base:300px] md:[--nav-grow:240px] lg:[--nav-base:340px] lg:[--nav-grow:260px]",
                     // round border
                     "rounded-full border border-white/10 dark:border-white/15",
                     // subtle glass effect so the border reads over any content

@@ -31,8 +31,8 @@ export function SpotlightNavbar({
     className,
     onItemClick,
     defaultActiveIndex = 0,
-    initialWidth = 360,
-    scrolledWidth = 560,
+    initialWidth = 400,
+    scrolledWidth = 640,
 }: SpotlightNavbarProps) {
     const pathname = usePathname();
     const navRef = useRef<HTMLDivElement>(null);
@@ -175,11 +175,11 @@ export function SpotlightNavbar({
                 style={{ maxWidth: scrolled ? scrolledWidth : initialWidth }}
                 className={cn(
                     "spotlight-nav spotlight-nav-bg glass-border spotlight-nav-shadow",
-                    "relative h-11 w-full rounded-full transition-[max-width] duration-300 ease-out overflow-hidden flex items-center justify-center"
+                    "relative h-11 md:h-12 w-full rounded-full transition-[max-width] duration-300 ease-out overflow-hidden flex items-center justify-center"
                 )}
             >
                 {/* Content: fixed gap, centered, so spacing never changes */}
-                <ul className="relative flex items-center justify-center gap-2 w-full h-full px-2 z-[10]">
+                <ul className="relative flex items-center justify-center gap-2 md:gap-3 w-full h-full px-2 md:px-3 z-[10]">
                     {items.map((item, idx) => (
                         <li key={idx} className="relative h-full flex items-center justify-center">
                             <Link
@@ -189,7 +189,7 @@ export function SpotlightNavbar({
                                     handleItemClick(item, idx);
                                 }}
                                 className={cn(
-                                    "px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium transition-colors duration-200 rounded-full",
+                                    "px-3 py-1.5 sm:px-4 sm:py-2 md:px-5 text-xs sm:text-sm font-medium transition-colors duration-200 rounded-full",
                                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 dark:focus-visible:ring-white/30",
                                     activeIndex === idx
                                         ? "text-black dark:text-white"
