@@ -27,14 +27,14 @@ export function CopyEmailButton({ email }: { email: string }) {
     <button
       onClick={handleCopy}
       type="button"
-      className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm font-semibold text-zinc-700 shadow-sm transition hover:bg-zinc-50 hover:text-zinc-950 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800/80 dark:hover:text-white"
+      className="group inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/10 bg-neutral-100 px-4 py-2 text-sm font-medium text-neutral-950 shadow-[0_8px_24px_-12px_rgba(255,255,255,0.5)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_10px_30px_-10px_rgba(255,255,255,0.6)] active:translate-y-0"
       title="Copy email address"
       aria-label="Copy email address"
     >
       {copied ? (
         <>
           <svg
-            className="h-4 w-4 text-emerald-500"
+            className="h-4 w-4 text-emerald-600"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -46,12 +46,12 @@ export function CopyEmailButton({ email }: { email: string }) {
               d="M5 13l4 4L19 7"
             />
           </svg>
-          <span className="text-emerald-600 dark:text-emerald-400">Copied!</span>
+          <span className="text-emerald-700">Copied!</span>
         </>
       ) : (
         <>
           <svg
-            className="h-4 w-4 text-zinc-500 dark:text-zinc-400"
+            className="h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"

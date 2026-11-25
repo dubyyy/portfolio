@@ -43,62 +43,48 @@ export function SocialLinks({
   email = "chidubem.chukwuafu@gmail.com",
 }: SocialLinksProps) {
   const links = [
-    { name: "GitHub", handle: githubHandle, href: githubUrl },
-    { name: "LinkedIn", handle: linkedinHandle, href: linkedinUrl },
-    { name: "X", handle: xHandle, href: xUrl },
+    { name: "GitHub", handle: githubHandle, href: githubUrl, accent: "#e5e5e5" },
+    { name: "LinkedIn", handle: linkedinHandle, href: linkedinUrl, accent: "#3b8fe0" },
+    { name: "X", handle: xHandle, href: xUrl, accent: "#e5e5e5" },
   ] as const;
 
   return (
-    <div className="rounded-2xl border border-neutral-800 bg-neutral-950/60 p-5 sm:p-6 backdrop-blur-sm transition-colors hover:border-neutral-700">
-      <div className="mb-4">
-        <span className="font-mono text-xs uppercase tracking-widest text-neutral-400">
-          Connect / Socials
-        </span>
-      </div>
+    <div className="flex flex-wrap items-center gap-2.5">
+      {email && <CopyEmailButton email={email} />}
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        {links.map(({ name, handle, href }) => (
-          <a
-            key={name}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group relative flex items-center justify-between rounded-xl border border-neutral-800/80 bg-neutral-900/40 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-neutral-600 hover:bg-neutral-900/90 hover:shadow-lg hover:shadow-black/50"
+      {links.map(({ name, handle, href, accent }) => (
+        <a
+          key={name}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`${name} (${handle})`}
+          title={handle}
+          style={{ "--accent": accent } as React.CSSProperties}
+          className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full border border-neutral-800 bg-gradient-to-b from-neutral-900/80 to-neutral-950/80 px-3.5 py-2 text-sm font-medium text-neutral-300 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[color:var(--accent)]/40 hover:text-white hover:shadow-[0_8px_24px_-8px_var(--accent)] [&_svg]:h-4 [&_svg]:w-4"
+        >
+          {/* soft accent glow on hover */}
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+            style={{ background: `radial-gradient(120% 120% at 0% 0%, ${accent}1f, transparent 60%)` }}
+          />
+          <span className="relative text-neutral-500 transition-colors duration-300 group-hover:text-[color:var(--accent)]">
+            {ICONS[name]}
+          </span>
+          <span className="relative">{name}</span>
+          <svg
+            className="relative -ml-1 !h-3.5 !w-3.5 text-neutral-600 opacity-0 transition-all duration-300 group-hover:ml-0 group-hover:translate-x-0 group-hover:text-white group-hover:opacity-100 -translate-x-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+            aria-hidden="true"
           >
-            <div className="flex items-center gap-3">
-              <div className="text-neutral-400 transition-colors group-hover:text-white">
-                {ICONS[name]}
-              </div>
-              <div className="min-w-0">
-                <div className="text-sm font-medium text-neutral-200 transition-colors group-hover:text-white">
-                  {name}
-                </div>
-                <div className="truncate font-mono text-xs text-neutral-500 transition-colors group-hover:text-neutral-400">
-                  {handle}
-                </div>
-              </div>
-            </div>
-
-            <svg
-              className="h-4 w-4 shrink-0 text-neutral-600 transition-all duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-              aria-hidden="true"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
-            </svg>
-          </a>
-        ))}
-      </div>
-
-      {email && (
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-neutral-800/80 pt-4">
-          <span className="font-mono text-xs text-neutral-500">Direct Email</span>
-          <CopyEmailButton email={email} />
-        </div>
-      )}
+            <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
+          </svg>
+        </a>
+      ))}
     </div>
   );
 }

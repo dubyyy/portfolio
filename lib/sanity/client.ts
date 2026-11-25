@@ -1,4 +1,4 @@
-import { createClient } from "@sanity/client";
+import { createClient } from "next-sanity";
 
 export const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "";
 export const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production";
@@ -14,6 +14,17 @@ export const client = isSanityConfigured
       useCdn: process.env.NODE_ENV === "production",
     })
   : null;
+
+/**
+ * Server-only client for Draft Mode / Studio Presentation previews.
+ * Reads unpublished drafts, so it needs SANITY_API_READ_TOKEN and must never ship to the browser.
+ */
+const readToken = process.env.SANITY_API_READ_TOKEN;
+
+export const previewClient =
+  client && readToken
+    ? client.withConfig({ token: readToken, useCdn: false, perspective: "drafts" })
+    : null;
 
 /**
  * Helper to build an image URL from a Sanity image reference or asset object

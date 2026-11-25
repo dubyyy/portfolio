@@ -1,4 +1,5 @@
-import { client, isSanityConfigured } from "./client";
+import { draftMode } from "next/headers";
+import { client as publishedClient, previewClient, isSanityConfigured } from "./client";
 import { SanityPost, SanityCategory } from "./types";
 
 /**
@@ -6,8 +7,19 @@ import { SanityPost, SanityCategory } from "./types";
  */
 export const fallbackPosts: SanityPost[] = [];
 
+/**
+ * In Draft Mode (the Studio's Presentation preview) read drafts; otherwise read published content.
+ * `draftMode().isEnabled` is allowed inside "use cache", and Next skips the cache while it's on,
+ * so previews are always fresh while the public site stays cached.
+ */
+async function getClient() {
+  const { isEnabled } = await draftMode();
+  return isEnabled && previewClient ? previewClient : publishedClient;
+}
+
 export async function getAllPosts(): Promise<SanityPost[]> {
   "use cache";
+  const client = await getClient();
   if (!isSanityConfigured || !client) {
     return fallbackPosts;
   }
@@ -35,6 +47,7 @@ export async function getAllPosts(): Promise<SanityPost[]> {
 
 export async function getPostBySlug(slug: string): Promise<SanityPost | null> {
   "use cache";
+  const client = await getClient();
   if (!isSanityConfigured || !client) {
     return fallbackPosts.find((p) => p.slug.current === slug) || null;
   }
@@ -71,6 +84,7 @@ export async function getPostsByCategory(categorySlug: string): Promise<SanityPo
 
 export async function getAllCategories(): Promise<SanityCategory[]> {
   "use cache";
+  const client = await getClient();
   if (!isSanityConfigured || !client) {
     const map = new Map<string, SanityCategory>();
     fallbackPosts.forEach((p) => {
